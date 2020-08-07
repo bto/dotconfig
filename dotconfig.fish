@@ -28,7 +28,6 @@ function _dotconfig_help
 end
 
 function _dotconfig_init
-    echo $DOTCONFIG_CONFIG_HOME
     for file in $DOTCONFIG_CONFIG_HOME/modules/*/dot.*
         set dotfile ~/(string replace -r '^dot' '' (basename $file))
         if test -f $dotfile
