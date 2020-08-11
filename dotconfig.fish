@@ -45,7 +45,6 @@ function _dotconfig_init
     end
 
     for file in $dotconfig_module_dir/*/functions/*.fish
-        echo $file
         set function_file $fish_function_dir/(basename $file)
         if test -f $function_file
             continue
