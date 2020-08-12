@@ -13,6 +13,8 @@ function dotconfig -a cmd -d "dotfiles manager"
 
     set -e argv[1]
     switch "$cmd"
+        case clone
+            _dotconfig_clone $argv
         case help
             _dotconfig_help $argv
         case init
@@ -21,6 +23,8 @@ function dotconfig -a cmd -d "dotfiles manager"
             _dotconfig_load $argv
         case set_path
             _dotconfig_set_path $argv
+        case setup
+            _dotconfig_setup $argv
         case \*
             echo "dotconfig: unknown command \"$cmd\"" >&2
             _dotconfig_help >&2
@@ -28,11 +32,22 @@ function dotconfig -a cmd -d "dotfiles manager"
     end
 end
 
+function _dotconfig_clone -a repo
+    if test -z $repo
+        echo "no repository" >&2
+        _dotconfig_help >&2
+        return 1
+    end
+    git clone https://github.com/$repo.git $dotconfig_config_dir
+end
+
 function _dotconfig_help
-    echo "usage: dotconfig help     Show this help"
+    echo "usage: dotconfig clone    Clone dotconfig config repository"
+    echo "       dotconfig help     Show this help"
     echo "       dotconfig init     Initialize all modules"
     echo "       dotconfig load     Load script(config.fish for default) of all modules"
     echo "       dotconfig set_path Set path variable"
+    echo "       dotconfig setup    Clone, Initialize, Load"
 end
 
 function _dotconfig_init
@@ -73,4 +88,10 @@ function _dotconfig_set_path -a var_name
         set -gx $var_name (string match -v $dir $$var_name)
         set -gx $var_name $dir $$var_name
     end
+end
+
+function _dotconfig_setup -a repo
+    _dotconfig_clone $repo
+    _dotconfig_init
+    _dotconfig_load
 end
