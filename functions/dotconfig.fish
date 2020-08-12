@@ -30,8 +30,8 @@ end
 
 function _dotconfig_help
     echo "usage: dotconfig help     Show this help"
-    echo "       dotconfig init     Initialize all packages"
-    echo "       dotconfig load     Load config.fish of all packages"
+    echo "       dotconfig init     Initialize all modules"
+    echo "       dotconfig load     Load script(config.fish for default) of all modules"
     echo "       dotconfig set_path Set path variable"
 end
 
