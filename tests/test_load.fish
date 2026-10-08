@@ -44,6 +44,7 @@ assert_eq (count $TEST_PATH) (count (printf '%s\n' $TEST_PATH | sort -u)) \
 
 # Startup: the plugin itself does not run dotconfig load; the line that
 # _dotconfig_install_loader adds to config.fish does, exactly once.
+assert_not_ok "config.fish does not exist at the start" test -e $__fish_config_dir/config.fish
 mkdir -p $module_dir/startup
 echo 'set -ga test_startup_count x' > $module_dir/startup/config.fish
 assert_eq 0 (fish -c 'count $test_startup_count') \
