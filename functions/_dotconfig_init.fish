@@ -1,4 +1,6 @@
 function _dotconfig_init
+    _dotconfig_install_loader
+
     for file in $dotconfig_module_dir/*/dot.*
         set dotfile ~/(string replace -r '^dot' '' (basename $file))
         if test -f $dotfile
