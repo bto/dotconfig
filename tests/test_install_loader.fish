@@ -56,9 +56,8 @@ assert_not_ok "fails on an unwritable config.fish" _dotconfig_install_loader
 chmod 644 $config_file
 assert_eq 0 (count_loader_lines) "leaves an unreadable or unwritable config.fish as is"
 
-# Startup order: with the loader in config.fish and conf.d/zz_dotconfig.fish
-# still present, dotconfig load runs twice and the last run comes after
-# conf.d. zzz_marker.fish sorts after zz_dotconfig.fish.
+# Startup order: dotconfig load runs once, after every conf.d snippet
+# (zzz_marker.fish stands for the last one, e.g. Homebrew's vendor files).
 rm -f $config_file
 _dotconfig_install_loader
 set module_dir $XDG_CONFIG_HOME/dotconfig/modules
@@ -67,8 +66,8 @@ mkdir -p $module_dir/order
 echo 'set -ga test_runs (set -q test_confd_done; and echo after; or echo before)' \
     > $module_dir/order/config.fish
 echo 'set -g test_confd_done 1' > $marker_file
-assert_eq "before after" (fish -c 'echo $test_runs') \
-    "fresh fish runs dotconfig load from conf.d and again after conf.d"
+assert_eq after (fish -c 'echo $test_runs') \
+    "fresh fish runs dotconfig load once, after conf.d"
 rm -rf $module_dir/order $marker_file
 
 # Plugin removed (e.g. fisher remove) while config.fish keeps the loader:
@@ -77,7 +76,6 @@ rm -rf $module_dir/order $marker_file
 rm -f $config_file
 _dotconfig_install_loader
 rm -f $__fish_config_dir/functions/*dotconfig*.fish \
-    $__fish_config_dir/conf.d/zz_dotconfig.fish \
     $__fish_config_dir/completions/dotconfig.fish
 assert_eq 1 (count_loader_lines) "config.fish has the loader line"
 assert_not_ok "dotconfig is gone in a fresh fish" fish -c 'type -q dotconfig'
