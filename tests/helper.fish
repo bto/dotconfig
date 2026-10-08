@@ -3,6 +3,7 @@
 #     source (path dirname (status filename))/helper.fish
 #     assert_eq expected actual "name"
 #     assert_ok "name" command args...
+#     assert_file_content expected file "name"
 #     test_finish
 
 set -g _test_count 0
@@ -48,6 +49,13 @@ function assert_not_ok -a name -d "Assert that a command exits with non-zero sta
     else
         _test_report 0 $name
     end
+end
+
+function assert_file_content -a expected file name -d "Assert the exact content of a file"
+    # string collect -N keeps trailing newlines, so they are compared too.
+    set -l actual "<no such file: $file>"
+    test -f $file; and set actual (string collect -N < $file)
+    assert_eq $expected $actual $name
 end
 
 function test_finish -d "Print the plan and exit non-zero if any assertion failed"

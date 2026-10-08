@@ -15,7 +15,7 @@ COMMAND:
         Print this help message.
 
     init
-        Initialize all modules.
+        Initialize all modules and add the loader to config.fish.
 
     load
         Load all modules.
