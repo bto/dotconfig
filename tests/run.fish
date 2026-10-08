@@ -50,7 +50,8 @@ for test_file in $test_files
     mkdir -p $tmp/home $tmp/data $tmp/cache
     for dir in functions conf.d completions
         mkdir -p $tmp/config/fish/$dir
-        cp $repo_dir/$dir/*.fish $tmp/config/fish/$dir/
+        set -l files $repo_dir/$dir/*.fish
+        set -q files[1]; and cp $files $tmp/config/fish/$dir/
     end
 
     echo "# $name"

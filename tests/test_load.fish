@@ -42,10 +42,16 @@ assert_eq "$first" (string join " " $TEST_PATH) "set_path is idempotent"
 assert_eq (count $TEST_PATH) (count (printf '%s\n' $TEST_PATH | sort -u)) \
     "set_path leaves no duplicates"
 
-# Startup: conf.d/zz_dotconfig.fish runs dotconfig load in a fresh fish.
+# Startup: the plugin itself does not run dotconfig load; the line that
+# _dotconfig_install_loader adds to config.fish does, exactly once.
+assert_not_ok "config.fish does not exist at the start" test -e $__fish_config_dir/config.fish
 mkdir -p $module_dir/startup
 echo 'set -ga test_startup_count x' > $module_dir/startup/config.fish
+assert_eq 0 (fish -c 'count $test_startup_count') \
+    "fresh fish without the loader line does not run dotconfig load"
+_dotconfig_install_loader
 assert_eq 1 (fish -c 'count $test_startup_count') \
     "fresh fish runs dotconfig load exactly once at startup"
+rm -f $__fish_config_dir/config.fish
 
 test_finish
